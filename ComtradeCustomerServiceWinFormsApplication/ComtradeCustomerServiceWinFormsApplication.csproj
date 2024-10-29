@@ -52,9 +52,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Customer.cs" />
-    <Compile Include="Models\Identification.cs" />
-    <Compile Include="Models\StatusData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CampaignService.cs" />
@@ -83,6 +80,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CampaignContract\CampaignContract.csproj">
+      <Project>{8b7f7694-3889-4f5d-8b61-c5dfedbe8913}</Project>
+      <Name>CampaignContract</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

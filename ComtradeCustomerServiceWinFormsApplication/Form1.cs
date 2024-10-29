@@ -1,5 +1,4 @@
-﻿using ComtradeCustomerServiceWinFormsApplication.Models;
-using ComtradeCustomerServiceWinFormsApplication.Services;
+﻿using ComtradeCustomerServiceWinFormsApplication.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CampaignContract;
+using CampaignContract.Models;
 
 namespace ComtradeCustomerServiceWinFormsApplication
 {
@@ -17,7 +18,7 @@ namespace ComtradeCustomerServiceWinFormsApplication
     {
 
         private string choosenID;
-        private List<Identification> filteredClients;
+        private List<ClientIdentity> filteredClients;
 
         private CustomerApiService customerApiService;
         private CampaignService campaignService;
@@ -101,53 +102,17 @@ namespace ComtradeCustomerServiceWinFormsApplication
             var rewardedCustomers = campaignService.GetRewardedCustomers();
             var csvFilePath = Path.Combine(Environment.CurrentDirectory, "RewardedCustomers.csv");
 
-            GenerateCsv(rewardedCustomers, csvFilePath);
+            StatusData status = campaignService.GenerateCsv(rewardedCustomers, csvFilePath);
 
-            Console.WriteLine($"CSV file generated at: {csvFilePath}");
-            InfoMessage.Text = $"CSV file generated at: {csvFilePath}";
-        }
-
-        public static void GenerateCsv(List<Customer> customers, string filePath)
-        {
-            var csvBuilder = new StringBuilder();
-
-            csvBuilder.AppendLine("Name,SSN,DOB,Home Street, Home City, HomeState, Home Zip,Office Street,Office City, Office State, Office Zip");
-
-            foreach (var customer in customers)
+            if (status.IsSuccessfull)
             {
-
-                var line = string.Join(",",
-                    EscapeCsvField(customer.Name),
-                    EscapeCsvField(customer.SSN),
-                    customer.DateOfBirth.ToShortDateString(),
-                    EscapeCsvField(customer.HomeStreet),
-                    EscapeCsvField(customer.HomeCity),
-                    EscapeCsvField(customer.HomeState),
-                    EscapeCsvField(customer.HomeZip),
-                    EscapeCsvField(customer.OfficeStreet),
-                    EscapeCsvField(customer.OfficeCity),
-                    EscapeCsvField(customer.OfficeState),
-                    EscapeCsvField(customer.OfficeZip)
-                );
-
-                csvBuilder.AppendLine(line);
+                Console.WriteLine($"CSV file generated at: {csvFilePath}");
+                InfoMessage.Text = $"CSV file generated at: {csvFilePath}";
             }
-
-            File.WriteAllText(filePath, csvBuilder.ToString());
+            else {
+                InfoMessage.Text = status.message;
+            }
         }
 
-        private static string EscapeCsvField(string field)
-        {
-            if (string.IsNullOrEmpty(field)) return string.Empty;
-
-            field = field.Replace("\"", "\"\"");
-
-            if (field.Contains(",") || field.Contains("\"") || field.Contains("\n"))
-            {
-                field = $"\"{field}\"";
-            }
-
-            return field;
-        }
     }
 }

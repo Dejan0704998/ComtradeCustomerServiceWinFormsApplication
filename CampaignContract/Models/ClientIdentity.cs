@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComtradeCustomerServiceWinFormsApplication.Models
+namespace CampaignContract.Models
 {
-    class Identification
+    public class ClientIdentity
     {
-        public Identification(string id, string name, string ssn) {
+        public ClientIdentity(string id, string name, string ssn) {
             Id = id;
             Name = name;
             SSN = ssn;

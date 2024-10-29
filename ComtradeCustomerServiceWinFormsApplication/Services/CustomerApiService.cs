@@ -1,4 +1,4 @@
-﻿using ComtradeCustomerServiceWinFormsApplication.Models;
+﻿using CampaignContract.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace ComtradeCustomerServiceWinFormsApplication.Services
             _httpClient = new HttpClient();
         }
 
-        public async Task<List<Identification>> GetListByNameAsync(string prefix)
+        public async Task<List<ClientIdentity>> GetListByNameAsync(string prefix)
         {
             var requestUrl = $"https://www.crcind.com/csp/samples/SOAP.Demo.cls?soap_method=GetListByName&name={prefix}";
 
@@ -90,14 +90,14 @@ namespace ComtradeCustomerServiceWinFormsApplication.Services
             return null;
         }
 
-        private List<Identification> ParseCustomerListFromXml(string xmlContent)
+        private List<ClientIdentity> ParseCustomerListFromXml(string xmlContent)
         {
             var xDocument = XDocument.Parse(xmlContent);
 
             XNamespace ns = "http://tempuri.org";
 
-            List<Identification> customerIdentifications = xDocument.Descendants(ns + "PersonIdentification")
-                .Select(person => new Identification(person.Element(ns + "ID")?.Value, 
+            List<ClientIdentity> customerIdentifications = xDocument.Descendants(ns + "PersonIdentification")
+                .Select(person => new ClientIdentity(person.Element(ns + "ID")?.Value, 
                                                      person.Element(ns + "Name")?.Value, 
                                                      person.Element(ns + "SSN")?.Value)).ToList();
 

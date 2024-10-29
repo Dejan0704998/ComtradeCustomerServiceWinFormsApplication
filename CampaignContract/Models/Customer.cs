@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComtradeCustomerServiceWinFormsApplication.Models
+namespace CampaignContract.Models
 {
     public class Customer
     {
