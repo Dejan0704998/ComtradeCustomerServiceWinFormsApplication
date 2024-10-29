@@ -76,7 +76,8 @@ namespace ComtradeCustomerServiceWinFormsApplication
             if (customer != null)
             {
                 int day = int.Parse(comboBoxDay.Text);
-                if (campaignService.RewardCustomer(customer,day))
+                StatusData status = campaignService.RewardCustomer(customer, day);
+                if (status.IsSuccessfull)
                 {
                     Console.WriteLine($"Rewarded {customer.Name}");
                     InfoMessage.Text = $"Rewarded {customer.Name}";
@@ -84,7 +85,8 @@ namespace ComtradeCustomerServiceWinFormsApplication
                 else
                 {
                     Console.WriteLine($"Failed to reward {customer.Name}. Daily limit reached or already rewarded.");
-                    InfoMessage.Text = $"Failed to reward {customer.Name}. Daily limit reached or already rewarded.";
+                    InfoMessage.Text = $"Failed to reward {customer.Name}. " + status.message;
+
                 }
             }
             else
@@ -97,13 +99,8 @@ namespace ComtradeCustomerServiceWinFormsApplication
         private void GenerateCSVreport(object sender, EventArgs e)
         {
             var rewardedCustomers = campaignService.GetRewardedCustomers();
-            Console.WriteLine("Rewarded Customers:");
-            foreach (var rewardedCustomer in rewardedCustomers)
-            {
-                Console.WriteLine($"{rewardedCustomer.Name} (SSN: {rewardedCustomer.SSN})");
-            }
-
             var csvFilePath = Path.Combine(Environment.CurrentDirectory, "RewardedCustomers.csv");
+
             GenerateCsv(rewardedCustomers, csvFilePath);
 
             Console.WriteLine($"CSV file generated at: {csvFilePath}");

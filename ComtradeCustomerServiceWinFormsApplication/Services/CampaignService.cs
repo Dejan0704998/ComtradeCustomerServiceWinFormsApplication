@@ -24,15 +24,25 @@ namespace ComtradeCustomerServiceWinFormsApplication.Services
             }
         }
 
-        public bool RewardCustomer(Customer customer, int day)
+        public StatusData RewardCustomer(Customer customer, int day)
         {
-            if (_rewardedCustomers[day].Count <= DailyLimit)
+            StatusData status = new StatusData();
+
+            if (!_rewardedCustomers.SelectMany(list => list).Where(x=>x.SSN==customer.SSN).Any() && _rewardedCustomers[day].Count < DailyLimit)
             {
                 _rewardedCustomers[day].Add(customer);
-                return true;
+                status.IsSuccessfull = true;
+                return status;
             }
-
-            return false;
+            else if (_rewardedCustomers[day].Count >= DailyLimit) 
+            {
+                status.IsSuccessfull = false;
+                status.message = "Daily limit reached for " + day + ". day !";
+                return status;
+            }
+            status.IsSuccessfull = false;
+            status.message = "Customer " + customer.Name + " already rewarded!";
+            return status;
         }
 
         public List<Customer> GetRewardedCustomers()

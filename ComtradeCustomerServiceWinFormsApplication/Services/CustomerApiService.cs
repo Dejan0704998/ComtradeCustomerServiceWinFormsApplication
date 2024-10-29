@@ -96,26 +96,17 @@ namespace ComtradeCustomerServiceWinFormsApplication.Services
 
             XNamespace ns = "http://tempuri.org";
 
-            var personIdentifications = xDocument.Descendants(ns + "PersonIdentification")
-                .Select(person => new
-                {
-                    ID = person.Element(ns+"ID")?.Value,
-                    Name = person.Element(ns+"Name")?.Value,
-                    SSN = person.Element(ns+"SSN")?.Value,
-                    DOB = person.Element(ns+"DOB")?.Value
-                }).ToList();
+            List<Identification> customerIdentifications = xDocument.Descendants(ns + "PersonIdentification")
+                .Select(person => new Identification(person.Element(ns + "ID")?.Value, 
+                                                     person.Element(ns + "Name")?.Value, 
+                                                     person.Element(ns + "SSN")?.Value)).ToList();
 
-            List<Identification> customerIdentifications = new List<Identification>();
-
-            foreach (var person in personIdentifications)
-            {
-                customerIdentifications.Add(new Identification(person.ID, person.Name,  person.SSN ));
-            }
-
-            if (customerIdentifications.Count != 0)
-
+            if (customerIdentifications != null && customerIdentifications.Count != 0)
                 return customerIdentifications;
+
             else return null;
+
+
         }
 
     }
