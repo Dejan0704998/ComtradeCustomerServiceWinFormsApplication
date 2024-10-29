@@ -41,57 +41,83 @@ namespace ComtradeCustomerServiceWinFormsApplication
             comboBoxDay.DroppedDown = true;
         }
 
-        private async void addDiscountForClient(object sender, EventArgs e) {
+        private async void ComboBoxName_TextChanged(object sender, EventArgs e)
+        {
+            var input = comboBoxName.Text.ToLower();
+            if (input.Length >= 2 && input.Length <= 12)
+            {
+
+                filteredClients = await customerApiService.GetListByNameAsync(input);
+
+                var filteredNames = filteredClients?.Select(x => x.Name).ToList() ?? new List<string>();
+
+                comboBoxName.Items.Clear(); 
+                comboBoxName.Items.AddRange(filteredNames.ToArray()); 
+                comboBoxName.DroppedDown = true; 
+            }
+            if (input.Length > 12) {
+                var choosenClient = filteredClients.Where(y => y.Name == comboBoxName.Text.ToLower()).FirstOrDefault();
+                if (choosenClient != null) {
+                    choosenID = choosenClient.Id;
+                }
+            }
+        }
+
+        private async void AddDiscountForClient(object sender, EventArgs e) {
+            
             var choosenClient = filteredClients.Where(y => y.Name == comboBoxName.Text);
             if (choosenClient != null)
             {
                 choosenID = choosenClient.Select(x=>x.Id).FirstOrDefault();
             }
+            
             var customer = await customerApiService.FindPersonAsync(choosenID);
+
             if (customer != null)
             {
-                if (campaignService.RewardCustomer(customer))
+                int day = int.Parse(comboBoxDay.Text);
+                if (campaignService.RewardCustomer(customer,day))
                 {
                     Console.WriteLine($"Rewarded {customer.Name}");
+                    InfoMessage.Text = $"Rewarded {customer.Name}";
                 }
                 else
                 {
                     Console.WriteLine($"Failed to reward {customer.Name}. Daily limit reached or already rewarded.");
+                    InfoMessage.Text = $"Failed to reward {customer.Name}. Daily limit reached or already rewarded.";
                 }
             }
             else
             {
                 Console.WriteLine("Customer not found or error occurred.");
+                InfoMessage.Text = "Customer not found or error occurred.";
             }
-
-
         }
 
-        private void generateCSVreport(object sender, EventArgs e)
+        private void GenerateCSVreport(object sender, EventArgs e)
         {
             var rewardedCustomers = campaignService.GetRewardedCustomers();
             Console.WriteLine("Rewarded Customers:");
             foreach (var rewardedCustomer in rewardedCustomers)
             {
-                Console.WriteLine($"{rewardedCustomer.Name} ({rewardedCustomer.Email})");
+                Console.WriteLine($"{rewardedCustomer.Name} (SSN: {rewardedCustomer.SSN})");
             }
 
             var csvFilePath = Path.Combine(Environment.CurrentDirectory, "RewardedCustomers.csv");
             GenerateCsv(rewardedCustomers, csvFilePath);
 
             Console.WriteLine($"CSV file generated at: {csvFilePath}");
+            InfoMessage.Text = $"CSV file generated at: {csvFilePath}";
         }
 
         public static void GenerateCsv(List<Customer> customers, string filePath)
         {
             var csvBuilder = new StringBuilder();
 
-            csvBuilder.AppendLine("Name,SSN,DOB,Home Street, Home City, HomeState, Home Zip,Office Street,Office City, Office State, Office Zip, IsRewarded");
+            csvBuilder.AppendLine("Name,SSN,DOB,Home Street, Home City, HomeState, Home Zip,Office Street,Office City, Office State, Office Zip");
 
             foreach (var customer in customers)
             {
-                //var line = $"{customer.Name},{customer.SSN},{customer.DateOfBirth.ToShortDateString()},{customer.OfficeStreet},{customer.OfficeCity},{customer.OfficeState},{customer.OfficeZip},{customer.HomeStreet},{customer.HomeCity},{customer.HomeState},{customer.HomeZip},{customer.Email},{customer.IsRewarded}";
-
 
                 var line = string.Join(",",
                     EscapeCsvField(customer.Name),
@@ -104,8 +130,7 @@ namespace ComtradeCustomerServiceWinFormsApplication
                     EscapeCsvField(customer.OfficeStreet),
                     EscapeCsvField(customer.OfficeCity),
                     EscapeCsvField(customer.OfficeState),
-                    EscapeCsvField(customer.OfficeZip),
-                    customer.IsRewarded
+                    EscapeCsvField(customer.OfficeZip)
                 );
 
                 csvBuilder.AppendLine(line);

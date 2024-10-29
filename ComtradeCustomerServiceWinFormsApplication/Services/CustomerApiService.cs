@@ -83,9 +83,7 @@ namespace ComtradeCustomerServiceWinFormsApplication.Services
                     OfficeStreet = customerElement.Element(ns + "Office")?.Element(ns + "Street")?.Value,
                     OfficeCity = customerElement.Element(ns + "Office")?.Element(ns + "City")?.Value,
                     OfficeState = customerElement.Element(ns + "Office")?.Element(ns + "State")?.Value,
-                    OfficeZip = customerElement.Element(ns + "Office")?.Element(ns + "Zip")?.Value,
-                    Email = "",
-                    IsRewarded = false
+                    OfficeZip = customerElement.Element(ns + "Office")?.Element(ns + "Zip")?.Value
                 };
             }
 

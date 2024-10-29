@@ -10,24 +10,34 @@ namespace ComtradeCustomerServiceWinFormsApplication.Services
     class CampaignService
     {
 
-        private readonly List<Customer> _rewardedCustomers = new List<Customer>();
+        private readonly List<Customer>[] _rewardedCustomers = new List<Customer>[7];
 
         private const int DailyLimit = 5;
 
-        public bool RewardCustomer(Customer customer)
-        {
-            if (_rewardedCustomers.Count < DailyLimit && !customer.IsRewarded)
+        private const int NumOfDays = 7;
+
+        public CampaignService() {
+
+            for (int i = 0; i < _rewardedCustomers.Length; i++)
             {
-                customer.IsRewarded = true;
-                _rewardedCustomers.Add(customer);
+                _rewardedCustomers[i] = new List<Customer>();
+            }
+        }
+
+        public bool RewardCustomer(Customer customer, int day)
+        {
+            if (_rewardedCustomers[day].Count <= DailyLimit)
+            {
+                _rewardedCustomers[day].Add(customer);
                 return true;
             }
+
             return false;
         }
 
         public List<Customer> GetRewardedCustomers()
         {
-            return _rewardedCustomers;
+            return _rewardedCustomers.SelectMany(list => list).ToList(); ;
         }
 
     }

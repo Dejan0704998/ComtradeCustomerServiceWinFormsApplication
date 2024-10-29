@@ -19,7 +19,5 @@ namespace ComtradeCustomerServiceWinFormsApplication.Models
         public string OfficeCity { get; set; }
         public string OfficeState { get; set; }
         public string OfficeZip { get; set; }
-        public string Email { get; set; }
-        public bool IsRewarded { get; set; }
     }
 }

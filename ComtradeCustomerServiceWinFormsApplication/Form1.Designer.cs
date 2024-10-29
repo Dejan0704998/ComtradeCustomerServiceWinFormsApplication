@@ -45,16 +45,17 @@ namespace ComtradeCustomerServiceWinFormsApplication
             this.comboBoxName.Name = "comboBoxName";
             this.comboBoxName.Size = new System.Drawing.Size(217, 28);
             this.comboBoxName.TabIndex = 0;
+            this.comboBoxName.Click += new System.EventHandler(this.ComboBoxName_TextChanged);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(454, 39);
+            this.button1.Location = new System.Drawing.Point(463, 39);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(124, 28);
+            this.button1.Size = new System.Drawing.Size(161, 38);
             this.button1.TabIndex = 1;
             this.button1.Text = "Reward client";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.addDiscountForClient);
+            this.button1.Click += new System.EventHandler(this.AddDiscountForClient);
             // 
             // button2
             // 
@@ -64,7 +65,7 @@ namespace ComtradeCustomerServiceWinFormsApplication
             this.button2.TabIndex = 2;
             this.button2.Text = "Generate report";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.generateCSVreport);
+            this.button2.Click += new System.EventHandler(this.GenerateCSVreport);
             // 
             // comboBoxDay
             // 
@@ -74,7 +75,6 @@ namespace ComtradeCustomerServiceWinFormsApplication
             this.comboBoxDay.Size = new System.Drawing.Size(101, 28);
             this.comboBoxDay.TabIndex = 3;
             this.comboBoxDay.Text = "1";
-            this.comboBoxDay.TextChanged += new System.EventHandler(this.generateCSVreport);
             this.comboBoxDay.Click += new System.EventHandler(this.ComboBoxDay_TextChanged);
             // 
             // label1
